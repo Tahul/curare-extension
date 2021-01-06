@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const Dotenv = require('dotenv-webpack')
 const FilemanagerPlugin = require('filemanager-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -82,6 +83,13 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.(ogg|mp3|wav|mpe?g)$/i,
+        loader: 'file-loader',
+        options: {
+          name: '[path][name].[ext]',
+        },
+      },
+      {
         type: 'javascript/auto', // prevent webpack handling json with its own loaders,
         test: /manifest\.json$/,
         use: {
@@ -132,6 +140,8 @@ module.exports = {
   },
 
   plugins: [
+    // Dotenv support
+    new Dotenv(),
     // Plugin to not generate js bundle for manifest entry
     new WextManifestWebpackPlugin(),
     // Generate sourcemaps
