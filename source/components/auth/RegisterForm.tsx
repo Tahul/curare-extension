@@ -104,10 +104,10 @@ const validator = createFinalFormValidation(validationSchema)
 const defaultState =
   process.env.NODE_ENV === 'development'
     ? {
-        name: process.env.SNOWPACK_PUBLIC_DEV_USERNAME,
-        email: process.env.SNOWPACK_PUBLIC_DEV_EMAIL,
-        password: process.env.SNOWPACK_PUBLIC_DEV_PASSWORD,
-        passwordConfirmation: process.env.SNOWPACK_PUBLIC_DEV_PASSWORD,
+        name: process.env.DEV_USERNAME,
+        email: process.env.DEV_EMAIL,
+        password: process.env.DEV_PASSWORD,
+        passwordConfirmation: process.env.DEV_PASSWORD,
       }
     : {
         name: '',
