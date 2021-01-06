@@ -38,7 +38,7 @@ const AuthDispatchContext = React.createContext<
 AuthDispatchContext.displayName = 'AuthDispatchContext'
 
 // Provider
-const AuthProvider = ({ children }: { children: React.FC }) => {
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = React.useReducer(authReducer, defaultState)
 
   return (
