@@ -1,3 +1,4 @@
+require('dotenv').config()
 import { createBrowserHistory } from 'history'
 import * as React from 'react'
 import ReactDOM from 'react-dom'
