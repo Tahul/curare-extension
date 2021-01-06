@@ -1,4 +1,3 @@
-import 'crx-hotreload/hot-reload.js'
 import 'emoji-log'
 import { browser } from 'webextension-polyfill-ts'
 
