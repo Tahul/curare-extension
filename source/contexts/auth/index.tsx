@@ -28,11 +28,13 @@ export const defaultState: DefaultState = {
 }
 
 // Contexts
-const AuthStateContext = React.createContext<DefaultState | null>(null)
+const AuthStateContext = React.createContext<DefaultState | undefined>(
+  undefined,
+)
 AuthStateContext.displayName = 'AuthStateContext'
-const AuthDispatchContext = React.createContext<Dispatch<
-  AuthActionType
-> | null>(null)
+const AuthDispatchContext = React.createContext<
+  Dispatch<AuthActionType> | undefined
+>(undefined)
 AuthDispatchContext.displayName = 'AuthDispatchContext'
 
 // Provider
@@ -51,8 +53,10 @@ const AuthProvider = ({ children }: { children: React.FC }) => {
 /**
  * useAuthState hooks
  */
-const useAuthState = () => {
+const useAuthState = (): DefaultState => {
   const context = React.useContext(AuthStateContext)
+
+  if (!context) throw new Error('Please us this within the AuthStateProvider')
 
   return context
 }
@@ -60,8 +64,11 @@ const useAuthState = () => {
 /**
  * useAuthDispatch hook
  */
-const useAuthDispatch = () => {
+const useAuthDispatch = (): Dispatch<AuthActionType> => {
   const context = React.useContext(AuthDispatchContext)
+
+  if (!context)
+    throw new Error('Please us this within the AuthDispatchProvider')
 
   return context
 }
