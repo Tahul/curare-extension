@@ -1,5 +1,5 @@
 import { Button, InputField } from '@heetch/flamingo-react'
-import { Validators } from '@lemoncode/fonk'
+import { ValidationSchema, Validators } from '@lemoncode/fonk'
 import { createFinalFormValidation } from '@lemoncode/fonk-final-form'
 import React from 'react'
 import { Field, Form } from 'react-final-form'
@@ -8,7 +8,7 @@ import { loginAction } from '../../contexts/auth/actions'
 import { AuthActionPayload } from '../../contexts/auth/reducer'
 import useActionsSounds from '../../hooks/useActionsSounds'
 
-const validationSchema = {
+const validationSchema: ValidationSchema = {
   field: {
     email: [Validators.required.validator, Validators.email.validator],
     password: [
