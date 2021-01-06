@@ -5,16 +5,19 @@ import { useAuthState } from '../../contexts/auth'
 const PublicRoute = ({
   component: Component,
   restricted,
+  path,
   ...rest
 }: {
   component: any
   restricted: boolean
-  rest: any
+  path: string
+  rest?: any
 }) => {
   const { isLoggedIn, name } = useAuthState()
 
   return (
     <Route
+      path={path}
       {...rest}
       render={(props) =>
         isLoggedIn && restricted ? (

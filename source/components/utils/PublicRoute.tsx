@@ -4,15 +4,18 @@ import { useAuthState } from '../../contexts/auth'
 
 const PrivateRoute = ({
   component: Component,
+  path,
   ...rest
 }: {
   component: any
-  rest: any
+  path: string
+  rest?: any
 }) => {
   const { isLoggedIn } = useAuthState()
 
   return (
     <Route
+      path={path}
       {...rest}
       render={(props) =>
         isLoggedIn ? <Component {...props} /> : <Redirect to="/login" />
