@@ -1,3 +1,4 @@
+// @ts-nocheck
 import useSound from 'use-sound'
 import backSfx from '../assets/sounds/back.wav'
 import buttonSfx from '../assets/sounds/button.wav'
