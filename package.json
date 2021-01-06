@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
+    "@heetch/flamingo-react": "^3.0.2",
     "@lemoncode/fonk": "^1.5.1",
     "@lemoncode/fonk-final-form": "^2.3.4",
     "@types/styled-components": "^5.1.7",
