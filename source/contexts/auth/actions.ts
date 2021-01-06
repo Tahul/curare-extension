@@ -1,6 +1,6 @@
 import { Dispatch } from 'react'
 import { login, logout, register } from '../../api/auth'
-import { AuthActionType } from './reducer'
+import { AuthActionPayload, AuthActionType } from './reducer'
 
 /**
  * Login action.
@@ -10,13 +10,15 @@ import { AuthActionType } from './reducer'
  */
 export const loginAction = async (
   dispatch: Dispatch<AuthActionType>,
-  { email, password }: { email: string; password: string },
+  { email, password }: Partial<AuthActionPayload>,
 ) => {
   dispatch({
     type: 'START_AUTH',
   })
 
   try {
+    if (!email || !password) throw new Error('Missing parameters')
+
     const payload = await login({ email, password })
 
     dispatch({
@@ -41,13 +43,15 @@ export const loginAction = async (
  */
 export const registerAction = async (
   dispatch: Dispatch<AuthActionType>,
-  { name, email, password }: { name: string; email: string; password: string },
+  { name, email, password }: Partial<AuthActionPayload>,
 ) => {
   dispatch({
     type: 'START_AUTH',
   })
 
   try {
+    if (!email || !password || !name) throw new Error('Missing parameters')
+
     const payload = await register({ name, email, password })
 
     dispatch({
