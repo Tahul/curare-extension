@@ -26,8 +26,8 @@ const validator = createFinalFormValidation(validationSchema)
 const defaultState =
   process.env.NODE_ENV === 'development'
     ? {
-        email: process.env.SNOWPACK_PUBLIC_DEV_EMAIL,
-        password: process.env.SNOWPACK_PUBLIC_DEV_PASSWORD,
+        email: process.env.DEV_EMAIL,
+        password: process.env.DEV_PASSWORD,
       }
     : {
         email: '',
@@ -88,7 +88,6 @@ const LoginForm = () => {
               />
             )}
           </Field>
-
           <Button isLoading={loading} style={{ width: '100%' }} type="submit">
             Login
           </Button>
