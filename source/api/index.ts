@@ -7,9 +7,7 @@ export type UserRequest = {
 
 const API = axios.create({
   baseURL:
-    process.env.NODE_ENV === 'development'
-      ? '/api'
-      : process.env.SNOWPACK_PUBLIC_API_URL,
+    process.env.NODE_ENV === 'development' ? '/api' : process.env.API_URL,
   withCredentials: true,
 })
 
