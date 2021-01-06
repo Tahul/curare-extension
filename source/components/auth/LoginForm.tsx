@@ -49,7 +49,7 @@ const LoginForm = () => {
     playSuccess()
   }
 
-  const validate = (values: { email: string; password: string }) =>
+  const validate = (values: Partial<AuthActionPayload>) =>
     validator.validateForm(values)
 
   return (
