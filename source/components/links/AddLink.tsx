@@ -1,5 +1,6 @@
-import { Input } from '@heetch/flamingo-react'
-import React, { Ref } from 'react'
+import { Button } from '@heetch/flamingo-react'
+import { AnimatePresence, motion } from 'framer-motion'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import useIsMounted from '../../hooks/useIsMounted'
 import { Link } from '../../hooks/useLinks'
@@ -14,31 +15,32 @@ const isUrl = (url: string) => regex.test(url)
 const StyledAddLink = styled.div``
 
 export interface AddLinkProps {
-  defaultUrl: string
-  onLinkPreview: ({ url }: { url: string }) => Promise<any>
-  onLinkSave: (payload: Partial<Link>) => Promise<Link>
+  url?: string
+  onLinkPreview: ({ url }: { url: string }) => Promise<Partial<Link>>
+  onLinkSave: (payload: Partial<Link>) => Promise<Link | undefined>
 }
 
-const AddLink: React.FC<AddLinkProps> = ({ onLinkPreview, onLinkSave }) => {
+const AddLink: React.FC<AddLinkProps> = ({
+  url,
+  onLinkPreview,
+  onLinkSave,
+}) => {
   const isMounted = useIsMounted()
-  const inputRef: Ref<HTMLInputElement | undefined> = React.useRef()
-  const [loading, setLoading] = React.useState<boolean>(false)
-  const [preview, setPreview] = React.useState<any>(false)
+  // @ts-ignore
+  const [loading, setLoading] = useState<boolean>(false)
+  const [preview, setPreview] = useState<Partial<Link>>()
+  const [selectingCollection, setSelectingCollection] = useState<boolean>(false)
 
-  const handleLinkChange = async (url: React.FormEvent<HTMLInputElement>) => {
+  const loadPreview = useCallback(async () => {
     if (isMounted) setLoading(true)
 
-    let urlValue: string
-
     try {
-      urlValue = url?.currentTarget?.value
-
-      if (url && isUrl(urlValue)) {
-        const preview = await onLinkPreview({ url: urlValue })
+      if (url && isUrl(url)) {
+        const preview = await onLinkPreview({ url })
 
         if (isMounted) setPreview(preview)
       } else {
-        if (isMounted) setPreview(false)
+        if (isMounted) setPreview(undefined)
       }
     } catch (e) {
       console.warn('Could not preview the following url:\n')
@@ -46,23 +48,18 @@ const AddLink: React.FC<AddLinkProps> = ({ onLinkPreview, onLinkSave }) => {
     }
 
     if (isMounted) setLoading(false)
-  }
+  }, [url])
 
+  // @ts-ignore
   const handleSave = async () => {
-    if (!inputRef || !inputRef.current) return
-
     if (isMounted) setLoading(true)
 
     const previewData = { ...preview }
 
     try {
-      const url = inputRef.current.value
-
-      if (isMounted) setPreview(false)
+      if (isMounted) setPreview(undefined)
 
       await onLinkSave({ url, ogp: previewData })
-
-      inputRef.current.value = ''
     } catch (e) {
       setPreview(previewData)
     }
@@ -70,24 +67,55 @@ const AddLink: React.FC<AddLinkProps> = ({ onLinkPreview, onLinkSave }) => {
     if (isMounted) setLoading(false)
   }
 
+  useEffect(() => {
+    const fetchPreview = async () => {
+      await loadPreview()
+    }
+
+    fetchPreview()
+  }, [loadPreview, url])
+
   return (
     <StyledAddLink>
-      <Input
-        ref={inputRef}
-        id="url"
-        placeholder="Paste a new link"
-        onChange={handleLinkChange}
-      />
+      <AnimatePresence>
+        {preview && !selectingCollection && (
+          <motion.div
+            initial={{ x: 0, opacity: 1 }}
+            exit={{ x: -100, opacity: 0 }}
+          >
+            <LinkItem editing link={{ ogp: preview }} />
 
-      {preview ? (
-        <LinkItem
-          editable
-          editing
-          onSave={handleSave}
-          link={{ ogp: preview }}
-          loading={loading}
-        />
-      ) : null}
+            <motion.div
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+            >
+              <Button
+                onClick={() => setSelectingCollection(true)}
+                style={{ width: '100%' }}
+              >
+                Select a collection
+              </Button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {preview && selectingCollection && (
+          <motion.div
+            initial={{ x: 100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 100, opacity: 0 }}
+          >
+            <Button
+              onClick={() => setSelectingCollection(false)}
+              style={{ width: '100%' }}
+            >
+              Back to link
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </StyledAddLink>
   )
 }
