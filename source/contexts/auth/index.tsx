@@ -3,17 +3,16 @@ import authReducer, { AuthActionType } from './reducer'
 
 // Data from localStorage
 const name = localStorage.getItem('curare_name')
-  ? localStorage.getItem('curare_name')
-  : null
 
 const email = localStorage.getItem('curare_email')
-  ? localStorage.getItem('curare_email')
-  : null
+
+const token = localStorage.getItem('curare_token')
 
 // Default state
 export interface DefaultState {
   name: string | null
   email: string | null
+  token: string | null
   isLoggedIn: boolean
   loading: boolean
   error: boolean
@@ -22,6 +21,7 @@ export interface DefaultState {
 export const defaultState: DefaultState = {
   name,
   email,
+  token,
   isLoggedIn: !!(name && email),
   loading: false,
   error: false,

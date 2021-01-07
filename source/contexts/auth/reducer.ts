@@ -4,10 +4,12 @@ import { DefaultState, defaultState } from './index'
  * Fill the localStorage with auth parameters
  * @param {*} name
  * @param {*} email
+ * @param {*} token
  */
-const fillLocalStorage = (name: string, email: string) => {
+const fillLocalStorage = (name: string, email: string, token: string) => {
   localStorage.setItem('curare_name', name)
   localStorage.setItem('curare_email', email)
+  localStorage.setItem('curare_token', token)
 }
 
 /**
@@ -16,11 +18,13 @@ const fillLocalStorage = (name: string, email: string) => {
 const resetLocalStorage = () => {
   localStorage.removeItem('curare_name')
   localStorage.removeItem('curare_email')
+  localStorage.removeItem('curare_token')
 }
 
 export interface AuthActionPayload {
   email?: string
   name?: string
+  token?: string
   password?: string
   error?: boolean
 }
@@ -39,8 +43,17 @@ const AuthReducer = (initialState: DefaultState, action: AuthActionType) => {
         error: false,
       }
     case 'SUCCESS_AUTH':
-      if (action.payload && action.payload.name && action.payload.email) {
-        fillLocalStorage(action.payload.name, action.payload.email)
+      if (
+        action.payload &&
+        action.payload.name &&
+        action.payload.email &&
+        action.payload.token
+      ) {
+        fillLocalStorage(
+          action.payload.name,
+          action.payload.email,
+          action.payload.token,
+        )
       }
 
       return {
