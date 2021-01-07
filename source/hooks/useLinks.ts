@@ -22,7 +22,7 @@ type UseLinksHookProps = {
   collectionId?: string
 }
 
-const useLinks = ({ userId, collectionId }: UseLinksHookProps) => {
+const useLinks = ({ userId, collectionId }: UseLinksHookProps = {}) => {
   const { playSuccess, playError } = useActionsSounds()
   const isMounted = useIsMounted()
   const [loading, setLoading] = useState(false)
@@ -185,11 +185,13 @@ const useLinks = ({ userId, collectionId }: UseLinksHookProps) => {
   }
 
   useEffect(() => {
-    const fetchLinks = async () => {
-      await getLinks()
-    }
+    if (userId) {
+      const fetchLinks = async () => {
+        await getLinks()
+      }
 
-    fetchLinks()
+      fetchLinks()
+    }
   }, [getLinks, userId])
 
   return {
