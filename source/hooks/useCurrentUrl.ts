@@ -1,16 +1,21 @@
 import { useEffect, useState } from 'react'
+import useIsMounted from './useIsMounted'
 
 export default () => {
-  let [currentUrl, setCurrentUrl] = useState<chrome.tabs.Tab>()
+  const isMounted = useIsMounted()
+  let [currentUrl, setCurrentUrl] = useState<string>()
 
   useEffect(() => {
     chrome.tabs.query(
       { active: true, lastFocusedWindow: true },
       (tabs: chrome.tabs.Tab[]) => {
-        setCurrentUrl(tabs[0])
+        if (tabs[0].url && isMounted) setCurrentUrl(tabs[0].url)
       },
     )
-  }, [])
 
-  return currentUrl
+    // Debug purposes
+    if (!currentUrl && isMounted) setCurrentUrl('https://github.com/Tahul')
+  }, [isMounted])
+
+  return { currentUrl }
 }
