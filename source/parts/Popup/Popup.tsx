@@ -10,8 +10,8 @@ import Login from '../../views/Login'
 import './styles.scss'
 
 const StyledApp = styled.div`
-  height: 300px;
-  width: 300px;
+  height: 420px;
+  width: 420px;
 `
 
 // Router switch
