@@ -1,3 +1,4 @@
+import { Link } from '../hooks/useLinks'
 import API from './index'
 
 /**
@@ -6,19 +7,19 @@ import API from './index'
  * @param {string, string} userId
  */
 export const index = async ({
-  userId = null,
-  collectionId = null,
+  userId,
+  collectionId,
 }: {
-  userId: string | null
-  collectionId: string | null
-}) => {
+  userId?: string
+  collectionId?: string
+}): Promise<Link[]> => {
   const request = await API.get(
     `/links${collectionId ? `?collectionId=${collectionId}` : ``}${
       userId ? `?userId=${userId}` : ``
     }`,
   )
 
-  return request.data
+  return request.data as Link[]
 }
 
 /**
@@ -30,11 +31,7 @@ export const store = async ({
   url,
   ogp,
   collection_id,
-}: {
-  url: string
-  ogp: Object
-  collection_id: string
-}) => {
+}: Partial<Link>): Promise<Link> => {
   const request = await API.post(`/links`, {
     url,
     ogp,
@@ -53,14 +50,10 @@ export const update = async ({
   id,
   url,
   ogp,
-}: {
-  id: string
-  url: string
-  ogp: Object
-}) => {
+}: Partial<Link>): Promise<Link> => {
   const request = await API.patch(`/links/${id}`, { url, ogp })
 
-  return request.data
+  return request.data as Link
 }
 
 /**
@@ -68,10 +61,10 @@ export const update = async ({
  *
  * @param {string} id
  */
-export const destroy = async ({ id }: { id: string }) => {
+export const destroy = async ({ id }: Partial<Link>): Promise<Link> => {
   const request = await API.delete(`/links/${id}`)
 
-  return request.data
+  return request.data as Link
 }
 
 /**
@@ -79,7 +72,7 @@ export const destroy = async ({ id }: { id: string }) => {
  *
  * @param {string} url
  */
-export const preview = async ({ url }: { url: string }) => {
+export const preview = async ({ url }: Partial<Link>): Promise<any> => {
   const request = await API.get(`/links/preview?url=${url}`)
 
   return request.data
@@ -90,7 +83,7 @@ export const preview = async ({ url }: { url: string }) => {
  *
  * @param {string} id
  */
-export const click = async ({ id }: { id: string }) => {
+export const click = async ({ id }: Partial<Link>): Promise<Link> => {
   const request = await API.post(`/links/${id}/click`)
 
   return request.data
