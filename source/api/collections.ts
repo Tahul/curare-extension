@@ -1,3 +1,7 @@
+import {
+  Collection,
+  CollectionImageUpdatePayload,
+} from '../hooks/useCollections'
 import API, { UserRequest } from './index'
 
 /**
@@ -5,7 +9,9 @@ import API, { UserRequest } from './index'
  *
  * @param {*} userId
  */
-export const index = async ({ userId = null }: UserRequest) => {
+export const index = async ({
+  userId = null,
+}: UserRequest): Promise<Collection[]> => {
   const request = await API.get(
     `/collections${userId ? `?userId=${userId}` : ``}`,
   )
@@ -18,7 +24,9 @@ export const index = async ({ userId = null }: UserRequest) => {
  *
  * @param {string} id
  */
-export const show = async ({ id }: { id: string }) => {
+export const show = async ({
+  id,
+}: Partial<Collection>): Promise<Collection> => {
   const request = await API.get(`/collections/${id}`)
 
   return request.data
@@ -29,7 +37,9 @@ export const show = async ({ id }: { id: string }) => {
  *
  * @param { title } collection
  */
-export const store = async ({ title }: { title: string }) => {
+export const store = async ({
+  title,
+}: Partial<Collection>): Promise<Collection> => {
   const request = await API.post(`/collections`, { title })
 
   return request.data
@@ -40,7 +50,10 @@ export const store = async ({ title }: { title: string }) => {
  *
  * @param {string, string} collection
  */
-export const update = async ({ id, title }: { id: string; title: string }) => {
+export const update = async ({
+  id,
+  title,
+}: Partial<Collection>): Promise<Collection> => {
   const request = await API.patch(`/collections/${id}`, { title })
 
   return request.data
@@ -51,7 +64,7 @@ export const update = async ({ id, title }: { id: string; title: string }) => {
  *
  * @param { string } id
  */
-export const destroy = async ({ id }: { id: string }) => {
+export const destroy = async ({ id }: Partial<Collection>) => {
   const request = await API.delete(`/collections/${id}`)
 
   return request.data
@@ -65,10 +78,7 @@ export const destroy = async ({ id }: { id: string }) => {
 export const updateImage = async ({
   id,
   image,
-}: {
-  id: string
-  image: File
-}) => {
+}: CollectionImageUpdatePayload) => {
   if (image) {
     // image isn't null, try to update the image accordingly
     if (!(image instanceof File)) {
