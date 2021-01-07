@@ -1,11 +1,6 @@
 import API from './index'
 
 /**
- * Initialize the session token
- */
-export const initialize = async () => await API.get('/csrf-cookie')
-
-/**
  * Login method
  *
  * @param {email, password}
@@ -17,9 +12,7 @@ export const login = async ({
   email: string
   password: string
 }) => {
-  await initialize()
-
-  const request = await API.post('/auth/login', {
+  const request = await API.post('/auth/login?withToken=true', {
     email,
     password,
   })
@@ -41,8 +34,6 @@ export const register = async ({
   email: string
   password: string
 }) => {
-  await initialize()
-
   const request = await API.post('/auth/register', {
     name,
     email,
