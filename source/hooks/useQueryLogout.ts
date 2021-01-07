@@ -1,4 +1,4 @@
-import React from 'react'
+import { useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useAuthDispatch } from '../contexts/auth'
 import { forceLogout } from '../contexts/auth/actions'
@@ -8,7 +8,7 @@ const useQueryLogout = () => {
   const location = useLocation()
   const authDispatch = useAuthDispatch()
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (location && location.search) {
       if (location.search === '?logout=true') {
         forceLogout(authDispatch)
