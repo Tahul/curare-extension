@@ -3,8 +3,9 @@ import { Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import PublicRoute from '../../components/utils/PrivateRoute'
 import PrivateRoute from '../../components/utils/PublicRoute'
-import { AuthProvider, useAuthState } from '../../contexts/auth'
+import { useAuthState } from '../../contexts/auth'
 import useQueryLogout from '../../hooks/useQueryLogout'
+import Home from '../../views/Home'
 import Login from '../../views/Login'
 import './styles.scss'
 
@@ -24,7 +25,7 @@ const Routes = () => {
       {!isLoggedIn ? (
         <PublicRoute restricted={true} path="/" component={Login} />
       ) : (
-        <PrivateRoute path="/" component={Login} />
+        <PrivateRoute path="/" component={Home} />
       )}
     </Switch>
   )
@@ -33,9 +34,7 @@ const Routes = () => {
 const Popup: React.FC = () => {
   return (
     <StyledApp>
-      <AuthProvider>
-        <Routes />
-      </AuthProvider>
+      <Routes />
     </StyledApp>
   )
 }
