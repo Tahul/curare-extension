@@ -2,12 +2,14 @@ import React from 'react'
 import { Redirect, Route } from 'react-router-dom'
 import { useAuthState } from '../../contexts/auth'
 
-const PrivateRoute = ({
+const PublicRoute = ({
   component: Component,
+  restricted,
   path,
   ...rest
 }: {
   component: any
+  restricted: boolean
   path: string
   rest?: any
 }) => {
@@ -18,10 +20,14 @@ const PrivateRoute = ({
       path={path}
       {...rest}
       render={(props) =>
-        isLoggedIn ? <Component {...props} /> : <Redirect to="/login" />
+        isLoggedIn && restricted ? (
+          <Redirect to={`/`} />
+        ) : (
+          <Component {...props} />
+        )
       }
     />
   )
 }
 
-export default PrivateRoute
+export default PublicRoute
