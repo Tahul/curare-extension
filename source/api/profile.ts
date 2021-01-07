@@ -1,3 +1,4 @@
+import { Profile } from '../hooks/useProfile'
 import API from './index'
 
 /**
@@ -6,13 +7,13 @@ import API from './index'
  * @param {userId} userId
  */
 export const getProfile = async ({
-  userId = null,
+  userId,
 }: {
-  userId: string | null
-}) => {
+  userId?: string
+}): Promise<Profile> => {
   const request = await API.get(`/profiles${userId ? `/${userId}` : ``}`)
 
-  return request.data
+  return request.data as Profile
 }
 
 /**
@@ -25,12 +26,7 @@ export const updateProfile = async ({
   last_name,
   description,
   url,
-}: {
-  first_name?: string
-  last_name?: string
-  description?: string
-  url?: string
-}) => {
+}: Partial<Profile>): Promise<Profile> => {
   const request = await API.patch(`/profiles`, {
     first_name,
     last_name,
@@ -38,7 +34,7 @@ export const updateProfile = async ({
     url,
   })
 
-  return request.data
+  return request.data as Profile
 }
 
 /**
@@ -46,7 +42,11 @@ export const updateProfile = async ({
  *
  * @param {File | null} avatar
  */
-export const updateAvatar = async ({ avatar }: { avatar?: File }) => {
+export const updateAvatar = async ({
+  avatar,
+}: {
+  avatar: File | null
+}): Promise<Profile> => {
   if (avatar) {
     // Avatar isn't null, try to update the avatar accordingly
     if (!(avatar instanceof File)) {
@@ -63,11 +63,11 @@ export const updateAvatar = async ({ avatar }: { avatar?: File }) => {
       },
     })
 
-    return request.data
+    return request.data as Profile
   } else {
     // Avatar is null; remove the current avatar
     const request = await API.delete(`/profiles/avatar`)
 
-    return request.data
+    return request.data as Profile
   }
 }
