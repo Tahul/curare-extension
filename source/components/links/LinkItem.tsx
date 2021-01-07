@@ -1,15 +1,7 @@
-import {
-  Button,
-  Icon,
-  IconButton,
-  Text,
-  theme,
-  UiText,
-} from '@heetch/flamingo-react'
-import { motion, useAnimation } from 'framer-motion'
+import { Icon, IconButton, Text, theme, UiText } from '@heetch/flamingo-react'
+import { motion } from 'framer-motion'
 import React from 'react'
 import { Img } from 'react-image'
-import { useInView } from 'react-intersection-observer'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import useActionsSounds from '../../hooks/useActionsSounds'
@@ -114,28 +106,15 @@ const StyledLinkItem = styled.div`
 export interface LinkItemProps {
   link: Partial<Link>
   editing: boolean
-  loading: boolean
-  editable: boolean
-  onSave: (link: Partial<Link>) => Promise<any>
-  onDelete?: (link: Partial<Link>) => Promise<boolean>
   onOpen?: (link: Partial<Link>) => {}
 }
 
 const LinkItem: React.FC<LinkItemProps> = ({
   link,
   editing = false,
-  loading = false,
-  editable,
-  onSave,
-  onDelete,
   onOpen,
 }) => {
   const history = useHistory()
-  const controls = useAnimation()
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    rootMargin: '-20px 0px',
-  })
   const { playButton, playBack } = useActionsSounds()
   const { ogp } = link
 
@@ -149,14 +128,6 @@ const LinkItem: React.FC<LinkItemProps> = ({
     }
 
     setFull(!full)
-  }
-
-  const handleSave = () => {
-    onSave(link)
-  }
-
-  const handleDelete = () => {
-    if (onDelete) onDelete(link)
   }
 
   const handleOpen = async () => {
@@ -177,33 +148,12 @@ const LinkItem: React.FC<LinkItemProps> = ({
     history.push(`/profile/${link?.profile?.name}/${link.collection.slug}`)
   }
 
-  React.useEffect(() => {
-    if (inView) {
-      controls.start('visible')
-    }
-  }, [controls, inView])
-
   return (
     <motion.li
-      ref={ref}
-      animate={controls}
-      initial="hidden"
-      variants={{
-        hidden: {
-          opacity: 0,
-          y: 50,
-        },
-        visible: {
-          opacity: 1,
-          y: 0,
-        },
-      }}
-      exit={{
-        opacity: 0,
-        scale: 0,
-        transition: {
-          duration: 0.2,
-        },
+      initial={{ opacity: 0, y: 50 }}
+      animate={{
+        opacity: 1,
+        y: 0,
       }}
     >
       <StyledLinkItem editing={editing}>
@@ -284,24 +234,6 @@ const LinkItem: React.FC<LinkItemProps> = ({
                 icon="IconArrowUp"
               />
             )}
-
-            {editable ? (
-              link?.id ? (
-                <IconButton
-                  icon="IconTrash"
-                  onClick={handleDelete}
-                  isLoading={loading}
-                />
-              ) : (
-                <Button
-                  onClick={handleSave}
-                  icon="IconCheck"
-                  isLoading={loading}
-                >
-                  Save
-                </Button>
-              )
-            ) : null}
           </div>
         </div>
       </StyledLinkItem>
