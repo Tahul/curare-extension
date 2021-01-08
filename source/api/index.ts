@@ -1,10 +1,6 @@
 import axios from 'axios'
 import { history } from '../parts/Popup'
 
-export type UserRequest = {
-  userId?: string | null
-}
-
 const API = axios.create({
   baseURL: process.env.API_URL,
   withCredentials: true,
