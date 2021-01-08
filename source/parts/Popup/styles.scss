@@ -2,7 +2,10 @@
 @import '@heetch/flamingo-react/dist/styles.css';
 
 body {
+  margin: 0;
+  width: 100%;
   background-color: rgb(236, 239, 248);
+  overflow-y: scroll;
 }
 
 a,
@@ -56,5 +59,4 @@ iframe,
 embed,
 object {
   display: block;
-  vertical-align: middle;
 }
