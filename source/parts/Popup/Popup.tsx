@@ -1,4 +1,3 @@
-import { theme } from '@heetch/flamingo-react'
 import * as React from 'react'
 import { Switch } from 'react-router-dom'
 import styled from 'styled-components'
@@ -6,14 +5,14 @@ import PrivateRoute from '../../components/utils/PrivateRoute'
 import PublicRoute from '../../components/utils/PublicRoute'
 import { useAuthState } from '../../contexts/auth'
 import useQueryLogout from '../../hooks/useQueryLogout'
-import Home from '../../views/Home'
+import LinkComposer from '../../views/LinkComposer'
 import Login from '../../views/Login'
 import './styles.scss'
 
 const StyledApp = styled.div`
   height: 420px;
   width: 420px;
-  padding: ${theme.space.l};
+  overflow: hidden;
 `
 
 // Router switch
@@ -27,7 +26,7 @@ const Routes = () => {
       {!isLoggedIn ? (
         <PublicRoute restricted={true} path="/" component={Login} />
       ) : (
-        <PrivateRoute path="/" component={Home} />
+        <PrivateRoute path="/" component={LinkComposer} />
       )}
     </Switch>
   )
