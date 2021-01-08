@@ -1,11 +1,13 @@
-import { Button } from '@heetch/flamingo-react'
+import { Button, theme } from '@heetch/flamingo-react'
 import { motion } from 'framer-motion'
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from '../../hooks/useLinks'
 import LinkItem from './LinkItem'
 
-const StyledAddLink = styled.div``
+const StyledAddLink = styled.div`
+  padding: ${theme.space.l};
+`
 
 export interface AddLinkProps {
   link: Partial<Link>
@@ -20,8 +22,9 @@ const AddLink: React.FC<AddLinkProps> = ({ link, onContinue }) => {
           <LinkItem link={link} />
 
           <motion.div
-            initial={{ y: 50, opacity: 0 }}
+            initial={{ y: 25, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.1 }}
           >
             <Button onClick={onContinue} style={{ width: '100%' }}>
               Select a collection
