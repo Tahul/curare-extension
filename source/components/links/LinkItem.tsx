@@ -1,8 +1,6 @@
-import { Icon, IconButton, Text, theme, UiText } from '@heetch/flamingo-react'
+import { Icon, IconButton, theme, UiText } from '@heetch/flamingo-react'
 import { motion } from 'framer-motion'
 import React from 'react'
-import { Img } from 'react-image'
-import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import useActionsSounds from '../../hooks/useActionsSounds'
 import { Link } from '../../hooks/useLinks'
@@ -18,8 +16,6 @@ const StyledLinkItem = styled.div`
   .image {
     height: 150px;
     overflow: hidden;
-    cursor: ${(props: Partial<LinkItemProps>) =>
-      !props.editing ? 'pointer' : 'cursor'};
 
     img {
       width: 100%;
@@ -32,8 +28,6 @@ const StyledLinkItem = styled.div`
   .content {
     padding: ${theme.space.l};
     overflow: hidden;
-    cursor: ${(props: Partial<LinkItemProps>) =>
-      !props.editing ? 'pointer' : 'cursor'};
 
     .title {
       display: flex;
@@ -62,31 +56,7 @@ const StyledLinkItem = styled.div`
     padding: 0 ${theme.space.l};
     display: flex;
     align-items: center;
-    justify-content: space-between;
-
-    .infos {
-      display: flex;
-      align-items: center;
-
-      p {
-        display: flex;
-        align-items: center;
-        margin-right: ${theme.space.s};
-        color: ${theme.color.text.secondary};
-        cursor: pointer;
-
-        &:hover {
-          font-weight: ${theme.fontWeight.bold};
-        }
-
-        img {
-          border-radius: 50%;
-          height: 1.5rem;
-          width: 1.5rem;
-          margin-right: ${theme.space.m};
-        }
-      }
-    }
+    justify-content: flex-end;
 
     .actions {
       display: flex;
@@ -105,16 +75,10 @@ const StyledLinkItem = styled.div`
 
 export interface LinkItemProps {
   link: Partial<Link>
-  editing: boolean
   onOpen?: (link: Partial<Link>) => {}
 }
 
-const LinkItem: React.FC<LinkItemProps> = ({
-  link,
-  editing = false,
-  onOpen,
-}) => {
-  const history = useHistory()
+const LinkItem: React.FC<LinkItemProps> = ({ link, onOpen }) => {
   const { playButton, playBack } = useActionsSounds()
   const { ogp } = link
 
@@ -131,21 +95,11 @@ const LinkItem: React.FC<LinkItemProps> = ({
   }
 
   const handleOpen = async () => {
-    window.open(link.url, '_blank')
+    chrome.tabs.create({
+      url: link.url,
+    })
 
     if (onOpen) onOpen(link)
-  }
-
-  const handleCollectionOpen = () => {
-    if (
-      !link.profile ||
-      !link.profile.name ||
-      !link.collection ||
-      !link.collection.slug
-    )
-      return
-
-    history.push(`/profile/${link?.profile?.name}/${link.collection.slug}`)
   }
 
   return (
@@ -156,11 +110,10 @@ const LinkItem: React.FC<LinkItemProps> = ({
         y: 0,
       }}
     >
-      <StyledLinkItem editing={editing}>
+      <StyledLinkItem>
         {ogp?.og?.['og:image'] ? (
           <div
             className="image"
-            onClick={editing ? () => {} : handleOpen}
             title={`${ogp.title}`}
             style={{
               backgroundImage: `url(${ogp.og['og:image']})`,
@@ -171,7 +124,7 @@ const LinkItem: React.FC<LinkItemProps> = ({
           />
         ) : null}
 
-        <div className="content" onClick={editing ? () => {} : handleOpen}>
+        <div className="content">
           <UiText
             className="title"
             variant="contentBold"
@@ -193,25 +146,6 @@ const LinkItem: React.FC<LinkItemProps> = ({
         </div>
 
         <div className="footer">
-          <div className="infos">
-            {link.collection ? (
-              <motion.p
-                onClick={handleCollectionOpen}
-                whileHover={{ scale: 1.05 }}
-              >
-                {link.collection.image_url && (
-                  <Img src={link.collection.image_url} />
-                )}
-
-                {link.collection.title}
-              </motion.p>
-            ) : link.clicks ? (
-              <Text>
-                {link.clicks > 0 ? `${link.clicks} clicks` : `No clicks`}
-              </Text>
-            ) : null}
-          </div>
-
           <div className="actions">
             {ogp.description ? (
               ogp?.description.length > 35 && !full ? (
