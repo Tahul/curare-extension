@@ -40,7 +40,7 @@ const useLinkComposer = () => {
   }, [currentUrl])
 
   // @ts-ignore Save the link
-  const handleSave = async () => {
+  const saveLink = async () => {
     if (isMounted) setLoading(true)
 
     try {
@@ -77,6 +77,8 @@ const useLinkComposer = () => {
   return {
     currentUrl,
     currentLink,
+    setCurrentLink,
+    saveLink,
     loading,
   }
 }
