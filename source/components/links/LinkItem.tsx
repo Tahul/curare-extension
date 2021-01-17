@@ -1,20 +1,21 @@
-import { Icon, IconButton, theme, UiText } from '@heetch/flamingo-react'
+import { Icon, theme, UiText } from '@heetch/flamingo-react'
 import { motion } from 'framer-motion'
-import React from 'react'
+import React, { ChangeEvent, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import useActionsSounds from '../../hooks/useActionsSounds'
 import { Link } from '../../hooks/useLinks'
-import renderHtml from '../../plugins/renderHtml'
-import ExpandableText from './ExpandableText'
 
 const StyledLinkItem = styled.div`
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   width: 100%;
   background-color: ${theme.color.text.white};
   border-radius: ${theme.borderRadius.m};
   overflow: hidden;
 
   .image {
-    height: 150px;
+    flex: 0 1 150px;
     overflow: hidden;
 
     img {
@@ -26,10 +27,14 @@ const StyledLinkItem = styled.div`
   }
 
   .content {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
     padding: ${theme.space.l};
     overflow: hidden;
 
     .title {
+      flex: 0 1 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -38,11 +43,15 @@ const StyledLinkItem = styled.div`
         fill: ${theme.color.element.tertiary};
       }
 
-      span {
+      input {
+        flex: 1 1 auto;
         overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
         padding-right: ${theme.space.m};
+        border: none;
+        outline: none;
+        font-family: inherit;
+        font-weight: ${theme.fontWeight.bold};
+        font-size: ${theme.fontSize.m};
       }
     }
 
@@ -50,60 +59,69 @@ const StyledLinkItem = styled.div`
       margin-top: ${theme.space.l};
       width: 100%;
     }
-  }
 
-  .footer {
-    padding: 0 ${theme.space.l};
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-
-    .actions {
-      display: flex;
-      justify-content: flex-end;
-
-      .expand {
-        transform: rotate(90deg);
-      }
-
-      button {
-        margin-left: ${theme.space.l};
-      }
+    textarea {
+      margin-top: ${theme.space.l};
+      flex: 1 1 auto;
+      width: 100%;
+      height: 100%;
+      max-height: 100%;
+      outline: none;
+      border: none;
+      font-family: inherit;
+      overflow-y: hidden;
+      resize: none;
+      line-height: ${theme.lineHeight.m};
+      font-size: ${theme.fontSize.m};
+      color: ${theme.color.text.secondary};
     }
   }
 `
 
 export interface LinkItemProps {
   link: Partial<Link>
-  onOpen?: (link: Partial<Link>) => {}
+  onUpdate: (link: Partial<Link>) => void
 }
 
-const LinkItem: React.FC<LinkItemProps> = ({ link, onOpen }) => {
-  const { playButton, playBack } = useActionsSounds()
+const LinkItem: React.FC<LinkItemProps> = ({ link, onUpdate }) => {
+  const descriptionRef = useRef<HTMLTextAreaElement>(null)
   const { ogp } = link
 
-  const [full, setFull] = React.useState(false)
+  const handleChange = (
+    type: string,
+    event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    console.log({ type, event })
 
-  const toggleFull = () => {
-    if (!full) {
-      playButton()
-    } else {
-      playBack()
+    const newLink = {
+      ...link,
+      ogp: {
+        ...ogp,
+      },
     }
 
-    setFull(!full)
+    if (type === 'title') newLink.ogp.title = event.target.value
+    if (type === 'description') newLink.ogp.description = event.target.value
+
+    console.log(newLink)
+
+    onUpdate(newLink)
   }
 
-  const handleOpen = async () => {
-    chrome.tabs.create({
-      url: link.url,
-    })
+  useEffect(() => {
+    if (
+      !descriptionRef ||
+      !descriptionRef.current ||
+      !descriptionRef.current.value
+    )
+      return
 
-    if (onOpen) onOpen(link)
-  }
+    descriptionRef.current.value = link?.ogp?.description || ''
+  }, [link])
 
   return (
     <motion.li
+      style={{ height: '100%' }}
       initial={{ opacity: 0, y: 50 }}
       animate={{
         opacity: 1,
@@ -131,44 +149,20 @@ const LinkItem: React.FC<LinkItemProps> = ({ link, onOpen }) => {
             alt={link?.url}
             title={link?.url}
           >
-            {renderHtml('span', ogp.title || ogp.domain)}
+            <input
+              type="text"
+              defaultValue={ogp.title || ogp.domain}
+              onChange={(event) => handleChange('title', event)}
+            />
 
             <Icon icon="IconGlobe" />
           </UiText>
 
-          {ogp.description ? (
-            <ExpandableText
-              full={full}
-              className="line"
-              text={ogp.description}
-            />
-          ) : null}
-        </div>
-
-        <div className="footer">
-          <div className="actions">
-            {ogp.description ? (
-              ogp?.description.length > 35 && !full ? (
-                <IconButton
-                  className="expand"
-                  onClick={toggleFull}
-                  icon="IconOption"
-                />
-              ) : (
-                <IconButton
-                  className="expand"
-                  onClick={toggleFull}
-                  icon="IconCross"
-                />
-              )
-            ) : (
-              <IconButton
-                className="expand"
-                onClick={handleOpen}
-                icon="IconArrowUp"
-              />
-            )}
-          </div>
+          <textarea
+            ref={descriptionRef}
+            defaultValue={ogp.description}
+            onChange={(event) => handleChange('description', event)}
+          />
         </div>
       </StyledLinkItem>
     </motion.li>
