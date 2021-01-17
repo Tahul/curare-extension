@@ -11,7 +11,10 @@ const isUrl = (url: string) => regex.test(url)
 
 const useLinkComposer = () => {
   const isMounted = useIsMounted()
-  const [loading, setLoading] = useState<boolean>(false)
+  const [linkSaved, setLinkSaved] = useState<boolean>(false)
+  const [selectingCollection, setSelectingCollection] = useState<boolean>(false)
+  const [previewLoading, setPreviewLoading] = useState<boolean>(false)
+  const [saveLoading, setSaveLoading] = useState<boolean>(false)
   const { currentUrl } = useCurrentUrl()
   const { getLinkPreview, createLink } = useLinks()
   const [currentLink, setCurrentLink] = useState<Partial<Link>>({
@@ -23,41 +26,37 @@ const useLinkComposer = () => {
 
   // Load preview of currentUrl
   const loadPreview = useCallback(async () => {
-    if (isMounted) setLoading(true)
+    if (isMounted) setPreviewLoading(true)
 
     try {
       if (currentUrl && isUrl(currentUrl)) {
         const preview = await getLinkPreview({ url: currentUrl })
 
-        if (isMounted) setCurrentLink({ ...currentLink, ogp: preview })
+        if (isMounted)
+          setCurrentLink({ ...currentLink, ogp: preview, url: currentUrl })
       }
     } catch (e) {
       console.warn('Could not preview the following url:\n')
       console.warn(currentUrl)
     }
 
-    if (isMounted) setLoading(false)
+    if (isMounted) setPreviewLoading(false)
   }, [currentUrl])
 
-  // @ts-ignore Save the link
-  const saveLink = async () => {
-    if (isMounted) setLoading(true)
+  // Save the link
+  const saveLink = useCallback(async () => {
+    if (isMounted) setSaveLoading(true)
 
     try {
       await createLink(currentLink)
 
-      if (isMounted)
-        setCurrentLink({
-          url: currentUrl,
-          collection_id: undefined,
-          ogp: undefined,
-        })
+      if (isMounted) setLinkSaved(true)
     } catch (e) {
       // TODO: Handle errors
     }
 
-    if (isMounted) setLoading(false)
-  }
+    if (isMounted) setSaveLoading(false)
+  }, [currentLink])
 
   useEffect(() => {
     // Fetch preview on mount
@@ -65,21 +64,28 @@ const useLinkComposer = () => {
       await loadPreview()
     }
 
-    if (isMounted)
-      setCurrentLink({
-        ...currentLink,
-        url: currentUrl,
-      })
-
     fetchPreview()
-  }, [loadPreview, currentUrl])
+  }, [currentUrl])
+
+  useEffect(() => {
+    const submitLink = async () => {
+      await saveLink()
+    }
+
+    if (currentLink.url && currentLink.ogp && currentLink.collection_id)
+      submitLink()
+  }, [currentLink])
 
   return {
+    selectingCollection,
+    setSelectingCollection,
+    linkSaved,
     currentUrl,
     currentLink,
     setCurrentLink,
     saveLink,
-    loading,
+    previewLoading,
+    saveLoading,
   }
 }
 
