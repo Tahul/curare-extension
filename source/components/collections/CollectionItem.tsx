@@ -71,7 +71,7 @@ const CollectionItem: React.FC<CollectionItemProps> = ({
   onSelectCollection,
 }) => {
   const handleClick = () => {
-    if (onSelectCollection) onSelectCollection({ collection, i })
+    if (onSelectCollection) onSelectCollection(collection)
   }
 
   return (
