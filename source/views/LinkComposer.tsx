@@ -3,13 +3,19 @@ import styled from 'styled-components'
 import SelectCollection from '../components/collections/SelectCollection'
 import AddLink from '../components/links/AddLink'
 import Page from '../components/utils/Page'
+import useActionsSounds from '../hooks/useActionsSounds'
 import useCollections from '../hooks/useCollections'
 import useLinkComposer from '../hooks/useLinkComposer'
 
-const StyledHome = styled.div``
+const StyledHome = styled.div`
+  width: 100%;
+  height: 100%;
+`
 
 const LinkComposer = () => {
-  const { currentLink, saveLink } = useLinkComposer()
+  const { playButton } = useActionsSounds()
+
+  const { currentLink, setCurrentLink, saveLink } = useLinkComposer()
 
   const { collections } = useCollections()
 
@@ -22,8 +28,10 @@ const LinkComposer = () => {
           <AddLink
             link={currentLink}
             onContinue={() => {
+              playButton()
               setSelectingCollection(true)
             }}
+            onUpdateLink={setCurrentLink}
           />
         )}
 
