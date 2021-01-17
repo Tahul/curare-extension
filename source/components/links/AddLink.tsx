@@ -6,20 +6,28 @@ import { Link } from '../../hooks/useLinks'
 import LinkItem from './LinkItem'
 
 const StyledAddLink = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   padding: ${theme.space.l};
 `
 
 export interface AddLinkProps {
   link: Partial<Link>
   onContinue: () => void
+  onUpdateLink: (link: Partial<Link>) => void
 }
 
-const AddLink: React.FC<AddLinkProps> = ({ link, onContinue }) => {
+const AddLink: React.FC<AddLinkProps> = ({
+  link,
+  onContinue,
+  onUpdateLink,
+}) => {
   return (
     <StyledAddLink>
       {link && link.ogp && link.ogp.title && (
         <>
-          <LinkItem link={link} />
+          <LinkItem link={link} onUpdate={onUpdateLink} />
 
           <motion.div
             initial={{ y: 25, opacity: 0 }}
