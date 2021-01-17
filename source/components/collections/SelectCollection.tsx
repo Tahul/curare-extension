@@ -10,15 +10,16 @@ import CollectionItem, { CollectionItemProps } from './CollectionItem'
 const StyledSelectCollection = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%;
 
   .backButton {
-    flex: 1;
+    flex: 0 1 auto;
     padding: ${theme.space.l};
     border-bottom: 1px solid ${theme.color.element.tertiary};
   }
 
   ul {
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
     overflow-y: scroll;
     overflow-x: hidden;
