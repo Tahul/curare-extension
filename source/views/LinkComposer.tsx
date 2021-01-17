@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import SelectCollection from '../components/collections/SelectCollection'
 import AddLink from '../components/links/AddLink'
@@ -15,16 +15,22 @@ const StyledHome = styled.div`
 const LinkComposer = () => {
   const { playButton } = useActionsSounds()
 
-  const { currentLink, setCurrentLink, saveLink } = useLinkComposer()
+  const {
+    linkSaved,
+    currentLink,
+    setCurrentLink,
+    previewLoading,
+    saveLoading,
+    selectingCollection,
+    setSelectingCollection,
+  } = useLinkComposer()
 
   const { collections } = useCollections()
-
-  const [selectingCollection, setSelectingCollection] = useState<boolean>(false)
 
   return (
     <Page>
       <StyledHome>
-        {!selectingCollection && (
+        {!linkSaved && !previewLoading && !saveLoading && !selectingCollection && (
           <AddLink
             link={currentLink}
             onContinue={() => {
@@ -35,14 +41,27 @@ const LinkComposer = () => {
           />
         )}
 
-        {selectingCollection && (
-          <SelectCollection
-            link={currentLink}
-            onSave={saveLink}
-            onBack={() => setSelectingCollection(false)}
-            collections={collections}
-          />
+        {!linkSaved &&
+          !previewLoading &&
+          !saveLoading &&
+          selectingCollection && (
+            <SelectCollection
+              link={currentLink}
+              onUpdateLink={setCurrentLink}
+              onBack={() => setSelectingCollection(false)}
+              collections={collections}
+            />
+          )}
+
+        {!linkSaved && previewLoading && !saveLoading && (
+          <div>Preview loading</div>
         )}
+
+        {!linkSaved && !previewLoading && saveLoading && (
+          <div>Save loading</div>
+        )}
+
+        {linkSaved && <div>Link saved :)</div>}
       </StyledHome>
     </Page>
   )
