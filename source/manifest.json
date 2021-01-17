@@ -10,7 +10,7 @@
     "128": "assets/icons/favicon-128.png"
   },
   "description": "Dead simple web content curation social network.",
-  "homepage_url": "https://github.com/Tahul/curare-extension",
+  "homepage_url": "https://curare.app",
   "short_name": "Curare",
 
   "permissions": ["activeTab", "storage", "http://*/*", "https://*/*"],
@@ -39,7 +39,7 @@
       "48": "assets/icons/favicon-48.png",
       "128": "assets/icons/favicon-128.png"
     },
-    "default_title": "tiny title",
+    "default_title": "curare",
     "__chrome|opera__chrome_style": false,
     "__firefox__browser_style": false
   },
