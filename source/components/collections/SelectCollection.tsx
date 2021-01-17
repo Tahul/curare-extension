@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Collection } from '../../hooks/useCollections'
 import { Link } from '../../hooks/useLinks'
 import BackButton from '../utils/BackButton'
-import CollectionItem, { CollectionItemProps } from './CollectionItem'
+import CollectionItem from './CollectionItem'
 
 const StyledSelectCollection = styled.div`
   display: flex;
@@ -33,20 +33,21 @@ const StyledSelectCollection = styled.div`
 export interface SelectCollectionProps {
   link: Partial<Link>
   collections: Collection[]
-  onSave: () => Promise<void>
+  onUpdateLink: (link: Partial<Link>) => void
   onBack: () => void
 }
 
 const SelectCollection: React.FC<SelectCollectionProps> = ({
   collections,
   link,
-  onSave,
+  onUpdateLink,
   onBack,
 }) => {
-  console.log({ link, onSave })
-
-  const handleSelect = ({ collection, i }: Partial<CollectionItemProps>) => {
-    console.log({ collection, i })
+  const handleSelectCollection = (collection: Partial<Collection>) => {
+    onUpdateLink({
+      ...link,
+      collection_id: collection.id,
+    })
   }
 
   return (
@@ -64,7 +65,7 @@ const SelectCollection: React.FC<SelectCollectionProps> = ({
             collection={collection}
             key={collection.id}
             i={i}
-            onSelectCollection={handleSelect}
+            onSelectCollection={handleSelectCollection}
           />
         ))}
       </ul>
