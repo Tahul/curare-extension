@@ -91,8 +91,6 @@ const LinkItem: React.FC<LinkItemProps> = ({ link, onUpdate }) => {
     type: string,
     event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
-    console.log({ type, event })
-
     const newLink = {
       ...link,
       ogp: {
@@ -102,8 +100,6 @@ const LinkItem: React.FC<LinkItemProps> = ({ link, onUpdate }) => {
 
     if (type === 'title') newLink.ogp.title = event.target.value
     if (type === 'description') newLink.ogp.description = event.target.value
-
-    console.log(newLink)
 
     onUpdate(newLink)
   }
